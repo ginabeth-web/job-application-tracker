@@ -67,6 +67,37 @@ class FollowUpTest extends TestCase
                 ->where('columns.1.applications.1.follow_up_due', false));
     }
 
+    public function test_show_page_includes_follow_up_fields(): void
+    {
+        $user = User::factory()->create();
+        $application = $this->make($user, '2026-11-01');
+
+        $this->actingAs($user)->get(route('applications.show', $application))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('application.follow_up_on', '2026-11-01')
+                ->where('application.follow_up_due', true));
+    }
+
+    public function test_moving_to_rejected_stops_it_being_due(): void
+    {
+        $user = User::factory()->create();
+        $application = $this->make($user, '2026-11-01');
+
+        $this->actingAs($user)->get(route('board'))
+            ->assertInertia(fn (Assert $page) => $page->where('dueCount', 1));
+
+        $this->actingAs($user)->patch(route('applications.move', $application), [
+            'status' => 'rejected',
+            'position' => 0,
+        ])->assertSessionHasNoErrors();
+
+        $this->actingAs($user)->get(route('board'))
+            ->assertInertia(fn (Assert $page) => $page
+                ->where('dueCount', 0)
+                ->where('columns.4.applications.0.id', $application->id)
+                ->where('columns.4.applications.0.follow_up_due', false));
+    }
+
     public function test_follow_up_on_saved_from_form(): void
     {
         $user = User::factory()->create();

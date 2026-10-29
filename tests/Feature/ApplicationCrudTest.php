@@ -86,6 +86,19 @@ class ApplicationCrudTest extends TestCase
         $this->assertDatabaseHas('applications', ['company' => 'Acme', 'position' => 2]);
     }
 
+    public function test_store_appends_after_gaps_in_column(): void
+    {
+        $user = User::factory()->create();
+        Application::factory()->for($user)->create(['status' => 'applied', 'position' => 3]);
+        Application::factory()->for($user)->create(['status' => 'applied', 'position' => 4]);
+
+        $this->actingAs($user)->post('/applications', $this->validPayload(['company' => 'Newest']));
+
+        $ordered = $user->applications()->where('status', 'applied')->orderBy('position')->get();
+        $this->assertCount(3, $ordered);
+        $this->assertSame('Newest', $ordered->last()->company);
+    }
+
     public function test_show_and_edit_render_for_owner(): void
     {
         $user = User::factory()->create();

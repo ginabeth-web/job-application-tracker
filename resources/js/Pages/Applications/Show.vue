@@ -60,6 +60,18 @@ const destroy = () => {
                             <dt class="text-sm font-medium text-gray-500">Applied on</dt>
                             <dd class="text-gray-900">{{ application.applied_on }}</dd>
                         </div>
+                        <div v-if="application.follow_up_on">
+                            <dt class="text-sm font-medium text-gray-500">Follow up on</dt>
+                            <dd class="text-gray-900">
+                                {{ application.follow_up_on }}
+                                <span
+                                    v-if="application.follow_up_due"
+                                    class="ml-2 inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800"
+                                >
+                                    Follow up
+                                </span>
+                            </dd>
+                        </div>
                     </dl>
 
                     <div class="mt-6 flex items-center gap-4">

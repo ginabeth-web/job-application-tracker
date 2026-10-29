@@ -36,9 +36,9 @@ class ApplicationController extends Controller
         $data = $request->validated();
 
         $application = new Application($data);
-        $application->position = $request->user()->applications()->where('status', $data['status'])->count();
         $application->user()->associate($request->user());
         $application->save();
+        $application->moveTo(ApplicationStatus::from($data['status']), PHP_INT_MAX);
 
         return redirect()->route('applications.show', $application);
     }

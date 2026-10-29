@@ -134,7 +134,11 @@ const submit = () => {
         <div class="flex items-center gap-4">
             <PrimaryButton :disabled="form.processing">Save</PrimaryButton>
             <Link
-                :href="route('applications.index')"
+                :href="
+                    application
+                        ? route('applications.show', application.id)
+                        : route('applications.index')
+                "
                 class="text-sm text-gray-600 underline hover:text-gray-900"
             >
                 Cancel
