@@ -17,9 +17,13 @@
 - No PHP/backend changes (only `resources/views/app.blade.php` in Task 2); if another seems needed, stop and report. Inertia page names and props stay identical, so the existing 74 PHP tests must keep passing untouched.
 - Every task ends green on: `php artisan test`, `npm run build` (vue-tsc + vite), `vendor/bin/pint --test`.
 - Vue 3 `<script setup lang="ts">`, Composition API. Icons only from `lucide-vue-next`.
-- Theme: shadcn `neutral` base colour, CSS variables, `--radius: 0.625rem`, font Figtree (already loaded by Breeze). Light and dark mode via the `.dark` class on `<html>`.
-- Status colours live in one place, `resources/js/lib/status.ts`, used by every status badge: wishlist = slate, applied = blue, interviewing = amber, offer = emerald, rejected = rose (each with a dark-mode variant).
+- Theme (user asked for "more colorful"; approved mockup): shadcn `neutral` base colour with a **violet accent**, CSS variables, `--radius: 0.625rem`, font Figtree (already loaded by Breeze). Light and dark mode via the `.dark` class on `<html>`.
+  - `--primary` = violet-600 (`oklch(0.541 0.281 293.009)`) in light, violet-500 (`oklch(0.606 0.25 292.717)`) in dark; `--primary-foreground` white; `--ring` = primary. Page background slightly violet-tinted (light `oklch(0.985 0.005 293)`, dark `oklch(0.16 0.02 285)`).
+  - Sidebar is filled: `--sidebar` = violet-800 (`oklch(0.432 0.232 292.759)`) light and violet-950 (`oklch(0.283 0.141 291.089)`) dark; `--sidebar-foreground` white; `--sidebar-accent` = white at 20% (`oklch(1 0 0 / 0.2)`), `--sidebar-accent-foreground` white; `--sidebar-border` white at 20%.
+  - User avatar fallback: amber-400 background, amber-950 text.
+- Status colours live in one place, `resources/js/lib/status.ts`: wishlist = slate, applied = blue, interviewing = amber, offer = emerald, rejected = rose. It exports class strings (with `dark:` variants) for: dot, title text, column background tint (light `-50`, dark `-950/60`), solid count badge (`-500`/`-600` bg, white text), card top stripe (`border-t-[3px]` in the `-500` shade), and dashed empty-state border/text.
 - Follow-up "due" uses amber everywhere (card badge, detail badge, board banner).
+- Visual checks use a dedicated server on port 8001 (`php artisan serve --port=8001`), so the user's own dev server on 8000 is left alone.
 - Each task includes a visual check in the built-in browser (`php artisan serve` + log in with the seeded test user), light and dark. If screenshots time out, use `get_page_text`/`read_page` to confirm structure and say so in the report.
 
 ## Review Focus
@@ -54,7 +58,7 @@
   - `components.json` with `"typescript": true`, `"tailwind": { "css": "resources/css/app.css", "baseColor": "neutral", "cssVariables": true }`, `"iconLibrary": "lucide"`, and the aliases from Global Constraints. Write it by hand before running the CLI so the CLI never asks.
   - `cn(...inputs: ClassValue[]): string` in `@/lib/utils` (clsx + tailwind-merge).
   - Generated via `npx shadcn-vue@latest add`: `button input label textarea select card badge table dropdown-menu alert-dialog sidebar separator avatar sonner tooltip sheet skeleton`.
-  - `@/lib/status.ts`: `statusBadgeClass(status: ApplicationStatus): string` returning the Tailwind classes for the colours in Global Constraints (light + `dark:`). Plain data map, no component.
+  - `@/lib/status.ts`: `statusStyles(status: ApplicationStatus): { dot: string; title: string; column: string; count: string; stripe: string; empty: string; badge: string }` returning the Tailwind class strings from Global Constraints (light + `dark:`; `badge` = soft tinted pill for tables and the detail page). Plain data map, no component. Class strings must be written out in full (no string-built class names) so Tailwind 4 detects them.
   - `useAppearance()` in `@/composables/useAppearance.ts` → `{ appearance: Ref<'light'|'dark'|'system'>, setAppearance(v) }`, persisted in `localStorage` key `appearance`, toggling `.dark` on `document.documentElement`, following `prefers-color-scheme` when `system`. Default `system`.
   - `app.blade.php` gets a tiny inline script in `<head>` (before Vite assets) that applies `.dark` from `localStorage`/`prefers-color-scheme` so there is no flash on load.
   - `app.ts` mounts `<Toaster />` (vue-sonner) once, globally (e.g. in a small root wrapper or in the layouts — pick one place and say which).
@@ -89,10 +93,10 @@
 - Modify: `resources/js/Pages/Board.vue`, `resources/js/Components/BoardColumn.vue`, `resources/js/Components/ApplicationCard.vue`
 
 **Interfaces:**
-- Consumes: `statusBadgeClass`, shadcn `Card`, `Badge`, lucide icons.
+- Consumes: `statusStyles`, shadcn `Card`, `Badge`, lucide icons.
 - Board: columns in a horizontal scroll row (`overflow-x-auto`, each column fixed width ~18rem, `snap-x` on mobile). Follow-up banner = amber alert-style box with `BellRing` icon and the existing "N follow-up(s) due" text and anchor link.
-- Column: rounded `bg-muted/50` panel; header shows a small colour dot from `statusBadgeClass`, the label, and a count `Badge` (`variant="secondary"`). The drop zone (`VueDraggable`) keeps `min-h-24` and the empty state ("No applications") goes **inside** the drop zone as a dashed-border placeholder (fixes the earlier deferred minor).
-- Card: shadcn `Card` (compact padding), company (semibold) + role (muted), footer row with `applied_on` (`CalendarDays` icon), notes count (`MessageSquare` icon, only when > 0) and the amber "Follow up" `Badge` when due. Whole card is the `Link` to `applications.show`; `cursor-grab`, hover shadow. Keep `id="application-{id}"` and the existing `data-*`/key attributes the drag handler relies on. The draggable item must remain the direct child element of `VueDraggable`.
+- Column: rounded panel tinted with `statusStyles().column`; header shows the status dot, the label in the status colour (`title`), and a solid count pill (`count`). The drop zone (`VueDraggable`) keeps `min-h-24` and the empty state ("No applications") goes **inside** the drop zone as a dashed placeholder in the status colour (`empty`) (fixes the earlier deferred minor).
+- Card: shadcn `Card` (compact padding) with the status-coloured top stripe (`stripe`), company (semibold) + role (muted), footer row with `applied_on` (`CalendarDays` icon), notes count (`MessageSquare` icon, only when > 0) and the amber "Follow up" `Badge` when due. Whole card is the `Link` to `applications.show`; `cursor-grab`, hover shadow. Keep `id="application-{id}"` and the existing `data-*`/key attributes the drag handler relies on. The draggable item must remain the direct child element of `VueDraggable`.
 
 - [ ] **Step 1:** Restyle the three files.
 - [ ] **Step 2: Verify** — build + tests pass; browser: board renders in light and dark; drag a card to the end of another column and reorder within a column, then confirm with `php artisan tinker` that statuses/positions persisted (Review Focus 1); 375px width: columns scroll sideways inside the board only.
