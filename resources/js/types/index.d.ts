@@ -12,3 +12,28 @@ export type PageProps<
         user: User;
     };
 };
+
+export type ApplicationStatus =
+    | 'wishlist'
+    | 'applied'
+    | 'interviewing'
+    | 'offer'
+    | 'rejected';
+
+export interface StatusOption {
+    value: ApplicationStatus;
+    label: string;
+}
+
+export interface Application {
+    id: number;
+    company: string;
+    role: string;
+    url: string | null;
+    location: string | null;
+    salary: string | null;
+    status: ApplicationStatus;
+    status_label: string;
+    position: number;
+    applied_on: string | null;
+}
