@@ -29,7 +29,7 @@ const destroy = () => {
 
         <div class="py-12">
             <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                <div class="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                     <dl class="max-w-xl space-y-4">
                         <div>
                             <dt class="text-sm font-medium text-gray-500">Status</dt>
@@ -66,7 +66,7 @@ const destroy = () => {
                                 {{ application.follow_up_on }}
                                 <span
                                     v-if="application.follow_up_due"
-                                    class="ml-2 inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800"
+                                    class="ml-2 inline-block rounded-sm bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800"
                                 >
                                     Follow up
                                 </span>
@@ -91,7 +91,7 @@ const destroy = () => {
                     </div>
                 </div>
 
-                <div class="mt-6 bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                <div class="mt-6 bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
                     <NotesList :application-id="application.id" :notes="notes" />
                 </div>
             </div>

@@ -37,7 +37,7 @@ const removeNote = (note: Note) => {
                 v-model="form.body"
                 rows="3"
                 placeholder="Add a note..."
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+                class="block w-full rounded-md border-gray-300 shadow-xs focus:border-indigo-500 focus:ring-indigo-500"
             />
             <InputError class="mt-2" :message="form.errors.body" />
             <PrimaryButton class="mt-2" :disabled="form.processing">

@@ -10,7 +10,7 @@ defineProps<{
 <template>
     <div
         :id="`application-${application.id}`"
-        class="cursor-grab rounded-md border border-gray-200 bg-white p-3 shadow-sm"
+        class="cursor-grab rounded-md border border-gray-200 bg-white p-3 shadow-xs"
     >
         <Link
             :href="route('applications.show', application.id)"
@@ -21,7 +21,7 @@ defineProps<{
         <p class="text-sm text-gray-600">{{ application.role }}</p>
         <span
             v-if="application.follow_up_due"
-            class="mt-1 inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800"
+            class="mt-1 inline-block rounded-sm bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800"
         >
             Follow up
         </span>
