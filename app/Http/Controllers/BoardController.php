@@ -20,6 +20,9 @@ class BoardController extends Controller
             'applications' => ApplicationResource::collection($byStatus->get($status->value, collect()))->resolve(),
         ], ApplicationStatus::cases());
 
-        return Inertia::render('Board', ['columns' => $columns]);
+        return Inertia::render('Board', [
+            'columns' => $columns,
+            'dueCount' => $request->user()->applications()->followUpDue()->count(),
+        ]);
     }
 }

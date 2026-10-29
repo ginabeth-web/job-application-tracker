@@ -9,6 +9,7 @@ defineProps<{
 
 <template>
     <div
+        :id="`application-${application.id}`"
         class="cursor-grab rounded-md border border-gray-200 bg-white p-3 shadow-sm"
     >
         <Link
@@ -18,6 +19,12 @@ defineProps<{
             {{ application.company }}
         </Link>
         <p class="text-sm text-gray-600">{{ application.role }}</p>
+        <span
+            v-if="application.follow_up_due"
+            class="mt-1 inline-block rounded bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800"
+        >
+            Follow up
+        </span>
         <p v-if="application.applied_on" class="mt-1 text-xs text-gray-500">
             Applied {{ application.applied_on }}
         </p>

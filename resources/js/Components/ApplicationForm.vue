@@ -19,6 +19,7 @@ const form = useForm({
     salary: props.application?.salary ?? '',
     status: (props.application?.status ?? 'wishlist') as ApplicationStatus,
     applied_on: props.application?.applied_on ?? '',
+    follow_up_on: props.application?.follow_up_on ?? '',
 });
 
 const submit = () => {
@@ -117,6 +118,17 @@ const submit = () => {
                 class="mt-1 block w-full"
             />
             <InputError class="mt-2" :message="form.errors.applied_on" />
+        </div>
+
+        <div>
+            <InputLabel for="follow_up_on" value="Follow up on" />
+            <TextInput
+                id="follow_up_on"
+                v-model="form.follow_up_on"
+                type="date"
+                class="mt-1 block w-full"
+            />
+            <InputError class="mt-2" :message="form.errors.follow_up_on" />
         </div>
 
         <div class="flex items-center gap-4">

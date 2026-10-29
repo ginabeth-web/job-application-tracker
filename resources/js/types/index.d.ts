@@ -36,6 +36,8 @@ export interface Application {
     status_label: string;
     position: number;
     applied_on: string | null;
+    follow_up_on: string | null;
+    follow_up_due: boolean;
     notes_count?: number;
 }
 
