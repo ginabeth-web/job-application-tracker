@@ -125,6 +125,17 @@ class ApplicationCrudTest extends TestCase
         $this->assertModelMissing($application);
     }
 
+    public function test_invalid_update_by_non_owner_is_forbidden_not_422(): void
+    {
+        $application = Application::factory()->create(['company' => 'Original']);
+
+        $this->actingAs(User::factory()->create())
+            ->put(route('applications.update', $application), ['company' => '', 'status' => 'hired'])
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('applications', ['id' => $application->id, 'company' => 'Original']);
+    }
+
     public function test_other_users_application_is_forbidden(): void
     {
         $application = Application::factory()->create();

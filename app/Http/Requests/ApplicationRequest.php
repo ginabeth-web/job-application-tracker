@@ -10,7 +10,9 @@ class ApplicationRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $application = $this->route('application');
+
+        return $application === null || $this->user()->can('update', $application);
     }
 
     /**
