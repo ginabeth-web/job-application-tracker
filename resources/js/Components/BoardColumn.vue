@@ -2,7 +2,7 @@
 import ApplicationCard from '@/Components/ApplicationCard.vue';
 import { Application, ApplicationStatus } from '@/types';
 import { router } from '@inertiajs/vue3';
-import { VueDraggable } from 'vue-draggable-plus';
+import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus';
 
 const props = defineProps<{
     status: ApplicationStatus;
@@ -13,28 +13,17 @@ const applications = defineModel<Application[]>('applications', {
     required: true,
 });
 
-const persist = (application: Application, position: number) => {
+// The dragged card comes from the event: the model above updates asynchronously,
+// so reading it here would still show the pre-drop order.
+const onDrop = (event: DraggableEvent<Application>) => {
     router.patch(
-        route('applications.move', application.id),
-        { status: props.status, position },
-        { preserveScroll: true },
+        route('applications.move', event.data.id),
+        { status: props.status, position: event.newIndex ?? 0 },
+        {
+            preserveScroll: true,
+            onError: () => router.reload({ only: ['columns'] }),
+        },
     );
-};
-
-const onAdd = (event: { newIndex?: number }) => {
-    const index = event.newIndex ?? 0;
-    const application = applications.value[index];
-    if (application) {
-        persist(application, index);
-    }
-};
-
-const onUpdate = (event: { newIndex?: number }) => {
-    const index = event.newIndex ?? 0;
-    const application = applications.value[index];
-    if (application) {
-        persist(application, index);
-    }
 };
 </script>
 
@@ -50,8 +39,8 @@ const onUpdate = (event: { newIndex?: number }) => {
             v-model="applications"
             group="board"
             class="min-h-24 space-y-2"
-            @add="onAdd"
-            @update="onUpdate"
+            @add="onDrop"
+            @update="onDrop"
         >
             <ApplicationCard
                 v-for="application in applications"
