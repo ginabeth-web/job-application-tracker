@@ -114,6 +114,39 @@ class ApplicationCrudTest extends TestCase
         $this->assertDatabaseHas('applications', ['id' => $application->id, 'role' => 'Staff Engineer']);
     }
 
+    public function test_update_with_status_change_appends_to_new_column(): void
+    {
+        $user = User::factory()->create();
+        foreach ([0, 1] as $position) {
+            $existing = Application::factory()->for($user)->create(['status' => 'offer']);
+            $existing->position = $position;
+            $existing->save();
+        }
+        $application = Application::factory()->for($user)->create(['status' => 'applied']);
+
+        $this->actingAs($user)
+            ->put(route('applications.update', $application), $this->validPayload(['status' => 'offer']))
+            ->assertRedirect(route('applications.show', $application));
+
+        $application->refresh();
+        $this->assertSame('offer', $application->status->value);
+        $this->assertSame(2, $application->position);
+    }
+
+    public function test_update_without_status_change_keeps_position(): void
+    {
+        $user = User::factory()->create();
+        $application = Application::factory()->for($user)->create(['status' => 'applied']);
+        $application->position = 7;
+        $application->save();
+
+        $this->actingAs($user)
+            ->put(route('applications.update', $application), $this->validPayload(['role' => 'Lead']))
+            ->assertRedirect(route('applications.show', $application));
+
+        $this->assertSame(7, $application->fresh()->position);
+    }
+
     public function test_destroy_deletes(): void
     {
         $user = User::factory()->create();
