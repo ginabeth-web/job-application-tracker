@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\ApplicationStatus;
 use App\Http\Requests\ApplicationRequest;
 use App\Http\Resources\ApplicationResource;
+use App\Http\Resources\NoteResource;
 use App\Models\Application;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -48,6 +49,7 @@ class ApplicationController extends Controller
 
         return Inertia::render('Applications/Show', [
             'application' => (new ApplicationResource($application))->resolve(),
+            'notes' => NoteResource::collection($application->notes)->resolve(),
         ]);
     }
 

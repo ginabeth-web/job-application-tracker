@@ -36,6 +36,14 @@ export interface Application {
     status_label: string;
     position: number;
     applied_on: string | null;
+    notes_count?: number;
+}
+
+export interface Note {
+    id: number;
+    body: string;
+    created_at: string;
+    created_human: string;
 }
 
 export interface BoardColumn {
