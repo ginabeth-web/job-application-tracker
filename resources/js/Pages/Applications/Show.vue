@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import DangerButton from '@/Components/DangerButton.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Application } from '@/types';
+import NotesList from '@/Components/NotesList.vue';
+import { Application, Note } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 
 const props = defineProps<{
     application: Application;
+    notes: Note[];
 }>();
 
 const destroy = () => {
@@ -75,6 +77,10 @@ const destroy = () => {
                             Back to list
                         </Link>
                     </div>
+                </div>
+
+                <div class="mt-6 bg-white p-4 shadow sm:rounded-lg sm:p-8">
+                    <NotesList :application-id="application.id" :notes="notes" />
                 </div>
             </div>
         </div>

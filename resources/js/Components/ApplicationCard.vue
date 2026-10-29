@@ -21,5 +21,9 @@ defineProps<{
         <p v-if="application.applied_on" class="mt-1 text-xs text-gray-500">
             Applied {{ application.applied_on }}
         </p>
+        <p v-if="application.notes_count" class="mt-1 text-xs text-gray-500">
+            {{ application.notes_count }}
+            {{ application.notes_count === 1 ? 'note' : 'notes' }}
+        </p>
     </div>
 </template>

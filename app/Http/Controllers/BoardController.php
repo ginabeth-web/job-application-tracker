@@ -12,7 +12,7 @@ class BoardController extends Controller
 {
     public function __invoke(Request $request): Response
     {
-        $byStatus = $request->user()->applications()->ordered()->get()->groupBy(fn ($a) => $a->status->value);
+        $byStatus = $request->user()->applications()->withCount('notes')->ordered()->get()->groupBy(fn ($a) => $a->status->value);
 
         $columns = array_map(fn (ApplicationStatus $status) => [
             'status' => $status->value,
