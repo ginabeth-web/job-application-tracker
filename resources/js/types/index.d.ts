@@ -37,3 +37,9 @@ export interface Application {
     position: number;
     applied_on: string | null;
 }
+
+export interface BoardColumn {
+    status: ApplicationStatus;
+    label: string;
+    applications: Application[];
+}

@@ -65,7 +65,15 @@ class ApplicationController extends Controller
     {
         Gate::authorize('update', $application);
 
-        $application->update($request->validated());
+        $data = $request->validated();
+        $newStatus = ApplicationStatus::from($data['status']);
+        $statusChanged = $application->status !== $newStatus;
+
+        $application->update($data);
+
+        if ($statusChanged) {
+            $application->moveTo($newStatus, PHP_INT_MAX);
+        }
 
         return redirect()->route('applications.show', $application);
     }
