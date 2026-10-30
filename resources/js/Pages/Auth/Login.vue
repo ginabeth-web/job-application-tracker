@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import Checkbox from '@/Components/Checkbox.vue';
 import GuestLayout from '@/Layouts/GuestLayout.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
+import { Button } from '@/Components/ui/button';
+import { Checkbox } from '@/Components/ui/checkbox';
+import { Input } from '@/Components/ui/input';
+import { Label } from '@/Components/ui/label';
 import { Head, Link, useForm } from '@inertiajs/vue3';
 
 defineProps<{
@@ -31,67 +31,66 @@ const submit = () => {
     <GuestLayout>
         <Head title="Log in" />
 
-        <div v-if="status" class="mb-4 text-sm font-medium text-green-600">
+        <div
+            v-if="status"
+            class="mb-4 text-sm font-medium text-emerald-600 dark:text-emerald-400"
+        >
             {{ status }}
         </div>
 
-        <form @submit.prevent="submit">
-            <div>
-                <InputLabel for="email" value="Email" />
-
-                <TextInput
+        <form class="grid gap-4" @submit.prevent="submit">
+            <div class="grid gap-2">
+                <Label for="email">Email</Label>
+                <Input
                     id="email"
-                    type="email"
-                    class="mt-1 block w-full"
                     v-model="form.email"
+                    type="email"
                     required
                     autofocus
                     autocomplete="username"
                 />
-
-                <InputError class="mt-2" :message="form.errors.email" />
+                <InputError :message="form.errors.email" />
             </div>
 
-            <div class="mt-4">
-                <InputLabel for="password" value="Password" />
-
-                <TextInput
+            <div class="grid gap-2">
+                <Label for="password">Password</Label>
+                <Input
                     id="password"
-                    type="password"
-                    class="mt-1 block w-full"
                     v-model="form.password"
+                    type="password"
                     required
                     autocomplete="current-password"
                 />
-
-                <InputError class="mt-2" :message="form.errors.password" />
+                <InputError :message="form.errors.password" />
             </div>
 
-            <div class="mt-4 block">
-                <label class="flex items-center">
-                    <Checkbox name="remember" v-model:checked="form.remember" />
-                    <span class="ms-2 text-sm text-gray-600"
-                        >Remember me</span
-                    >
-                </label>
+            <div class="flex items-center gap-2">
+                <Checkbox
+                    id="remember"
+                    v-model="form.remember"
+                    name="remember"
+                />
+                <Label for="remember" class="font-normal">Remember me</Label>
             </div>
 
-            <div class="mt-4 flex items-center justify-end">
+            <Button type="submit" class="w-full" :disabled="form.processing">
+                Log in
+            </Button>
+
+            <div class="flex flex-col items-center gap-2">
                 <Link
                     v-if="canResetPassword"
                     :href="route('password.request')"
-                    class="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-hidden focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                    class="text-sm underline-offset-4 hover:underline"
                 >
                     Forgot your password?
                 </Link>
-
-                <PrimaryButton
-                    class="ms-4"
-                    :class="{ 'opacity-25': form.processing }"
-                    :disabled="form.processing"
+                <Link
+                    :href="route('register')"
+                    class="text-sm text-muted-foreground underline-offset-4 hover:underline"
                 >
-                    Log in
-                </PrimaryButton>
+                    Need an account? Register
+                </Link>
             </div>
         </form>
     </GuestLayout>
