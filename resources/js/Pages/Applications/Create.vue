@@ -13,18 +13,10 @@ defineProps<{
     <Head title="New application" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                New application
-            </h2>
-        </template>
+        <template #header>New application</template>
 
-        <div class="py-12">
-            <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
-                <div class="bg-white p-4 shadow-sm sm:rounded-lg sm:p-8">
-                    <ApplicationForm :statuses="statuses" class="max-w-xl" />
-                </div>
-            </div>
+        <div class="mx-auto max-w-3xl">
+            <ApplicationForm :statuses="statuses" />
         </div>
     </AuthenticatedLayout>
 </template>
