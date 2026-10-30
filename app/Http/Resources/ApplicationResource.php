@@ -27,6 +27,8 @@ class ApplicationResource extends JsonResource
             'status_label' => $this->status->label(),
             'position' => $this->position,
             'applied_on' => $this->applied_on?->format('Y-m-d'),
+            'follow_up_on' => $this->follow_up_on?->format('Y-m-d'),
+            'follow_up_due' => $this->isFollowUpDue(),
             'notes_count' => $this->whenCounted('notes'),
         ];
     }

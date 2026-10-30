@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ApplicationStatus;
+use Carbon\CarbonInterface;
 use Database\Factories\ApplicationFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -24,6 +25,7 @@ class Application extends Model
         'salary',
         'status',
         'applied_on',
+        'follow_up_on',
     ];
 
     /**
@@ -34,6 +36,7 @@ class Application extends Model
         return [
             'status' => ApplicationStatus::class,
             'applied_on' => 'date',
+            'follow_up_on' => 'date',
         ];
     }
 
@@ -57,6 +60,29 @@ class Application extends Model
     public function scopeOrdered(Builder $query): Builder
     {
         return $query->orderBy('position')->orderBy('id');
+    }
+
+    /**
+     * Applications whose follow-up date has arrived (today or earlier) and are still open.
+     *
+     * @param  Builder<Application>  $query
+     * @return Builder<Application>
+     */
+    public function scopeFollowUpDue(Builder $query, ?CarbonInterface $today = null): Builder
+    {
+        return $query
+            ->whereDate('follow_up_on', '<=', $today ?? today())
+            ->where('status', '!=', ApplicationStatus::Rejected);
+    }
+
+    /**
+     * Single-model mirror of scopeFollowUpDue().
+     */
+    public function isFollowUpDue(): bool
+    {
+        return $this->follow_up_on !== null
+            && ! $this->status->isClosed()
+            && $this->follow_up_on->lte(today());
     }
 
     /**

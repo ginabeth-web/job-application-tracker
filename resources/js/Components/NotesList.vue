@@ -1,9 +1,18 @@
 <script setup lang="ts">
-import DangerButton from '@/Components/DangerButton.vue';
+import ConfirmDialog from '@/Components/ConfirmDialog.vue';
 import InputError from '@/Components/InputError.vue';
-import PrimaryButton from '@/Components/PrimaryButton.vue';
+import { Button } from '@/Components/ui/button';
+import {
+    Card,
+    CardContent,
+    CardHeader,
+    CardTitle,
+} from '@/Components/ui/card';
+import { Textarea } from '@/Components/ui/textarea';
 import { Note } from '@/types';
 import { router, useForm } from '@inertiajs/vue3';
+import { Trash2 } from 'lucide-vue-next';
+import { toast } from 'vue-sonner';
 
 const props = defineProps<{
     applicationId: number;
@@ -15,56 +24,71 @@ const form = useForm({ body: '' });
 const addNote = () => {
     form.post(route('applications.notes.store', props.applicationId), {
         preserveScroll: true,
-        onSuccess: () => form.reset(),
+        onSuccess: () => {
+            form.reset();
+            toast.success('Note added');
+        },
     });
 };
 
 const removeNote = (note: Note) => {
-    if (confirm('Delete this note?')) {
-        router.delete(route('notes.destroy', note.id), {
-            preserveScroll: true,
-        });
-    }
+    router.delete(route('notes.destroy', note.id), {
+        preserveScroll: true,
+        onSuccess: () => toast.success('Note deleted'),
+    });
 };
 </script>
 
 <template>
-    <section>
-        <h3 class="text-lg font-medium text-gray-900">Notes</h3>
+    <Card>
+        <CardHeader>
+            <CardTitle>Notes</CardTitle>
+        </CardHeader>
+        <CardContent class="space-y-6">
+            <form class="space-y-2" @submit.prevent="addNote">
+                <Textarea
+                    v-model="form.body"
+                    rows="3"
+                    aria-label="New note"
+                    placeholder="Add a note..."
+                />
+                <InputError :message="form.errors.body" />
+                <Button type="submit" :disabled="form.processing">Add note</Button>
+            </form>
 
-        <form class="mt-4" @submit.prevent="addNote">
-            <textarea
-                v-model="form.body"
-                rows="3"
-                placeholder="Add a note..."
-                class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-            <InputError class="mt-2" :message="form.errors.body" />
-            <PrimaryButton class="mt-2" :disabled="form.processing">
-                Add note
-            </PrimaryButton>
-        </form>
-
-        <p v-if="notes.length === 0" class="mt-6 text-sm text-gray-500">
-            No notes yet.
-        </p>
-        <ul v-else class="mt-6 space-y-4">
-            <li
-                v-for="note in notes"
-                :key="note.id"
-                class="rounded-md border border-gray-200 p-3"
-            >
-                <p class="whitespace-pre-line text-gray-900">{{ note.body }}</p>
-                <div class="mt-2 flex items-center justify-between">
-                    <time
-                        class="text-xs text-gray-500"
-                        :datetime="note.created_at"
-                    >
-                        {{ note.created_human }}
-                    </time>
-                    <DangerButton @click="removeNote(note)">Delete</DangerButton>
-                </div>
-            </li>
-        </ul>
-    </section>
+            <p v-if="notes.length === 0" class="text-sm text-muted-foreground">
+                No notes yet.
+            </p>
+            <ul v-else class="space-y-3">
+                <li
+                    v-for="note in notes"
+                    :key="note.id"
+                    class="rounded-lg border bg-muted/40 p-3"
+                >
+                    <p class="whitespace-pre-line">{{ note.body }}</p>
+                    <div class="mt-2 flex items-center justify-between">
+                        <time
+                            class="text-xs text-muted-foreground"
+                            :datetime="note.created_at"
+                        >
+                            {{ note.created_human }}
+                        </time>
+                        <ConfirmDialog
+                            title="Delete this note?"
+                            description="This note will be permanently deleted."
+                            @confirm="removeNote(note)"
+                        >
+                            <Button
+                                variant="ghost"
+                                size="icon-sm"
+                                aria-label="Delete note"
+                            >
+                                <Trash2 />
+                            </Button>
+                        </ConfirmDialog>
+                    </div>
+                </li>
+            </ul>
+        </CardContent>
+    </Card>
 </template>

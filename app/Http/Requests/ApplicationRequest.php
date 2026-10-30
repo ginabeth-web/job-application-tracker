@@ -28,6 +28,7 @@ class ApplicationRequest extends FormRequest
             'salary' => ['nullable', 'string', 'max:255'],
             'status' => ['required', Rule::enum(ApplicationStatus::class)],
             'applied_on' => ['nullable', 'date'],
+            'follow_up_on' => ['nullable', 'date'],
         ];
     }
 }

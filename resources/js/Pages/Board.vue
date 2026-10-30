@@ -2,11 +2,14 @@
 import BoardColumn from '@/Components/BoardColumn.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { BoardColumn as BoardColumnData } from '@/types';
+import { Button } from '@/Components/ui/button';
 import { Head, Link } from '@inertiajs/vue3';
-import { ref, watch } from 'vue';
+import { BellRing, Plus } from 'lucide-vue-next';
+import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
     columns: BoardColumnData[];
+    dueCount: number;
 }>();
 
 // Local copy so dragging updates instantly; refreshed whenever the server sends new props.
@@ -17,28 +20,42 @@ watch(
         columns.value = value;
     },
 );
+
+const firstDueHref = computed(() => {
+    const due = columns.value
+        .flatMap((column) => column.applications)
+        .find((application) => application.follow_up_due);
+
+    return due ? `#application-${due.id}` : '#';
+});
 </script>
 
 <template>
     <Head title="Board" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Board
-                </h2>
-                <Link
-                    :href="route('applications.create')"
-                    class="rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700"
-                >
+        <template #header>Board</template>
+
+        <template #actions>
+            <Button as-child size="sm">
+                <Link :href="route('applications.create')">
+                    <Plus />
                     New application
                 </Link>
-            </div>
+            </Button>
         </template>
 
-        <div class="py-8">
-            <div class="mx-auto flex max-w-full gap-4 overflow-x-auto px-4 sm:px-6 lg:px-8">
+        <div class="min-w-0">
+            <a
+                v-if="dueCount > 0"
+                :href="firstDueHref"
+                class="mb-4 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200 dark:hover:bg-amber-950"
+            >
+                <BellRing class="size-4 shrink-0" />
+                {{ dueCount }}
+                {{ dueCount === 1 ? 'follow-up' : 'follow-ups' }} due
+            </a>
+            <div class="flex snap-x gap-4 overflow-x-auto pb-4">
                 <BoardColumn
                     v-for="column in columns"
                     :key="column.status"
