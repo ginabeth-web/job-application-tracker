@@ -49,6 +49,7 @@ const removeNote = (note: Note) => {
                 <Textarea
                     v-model="form.body"
                     rows="3"
+                    aria-label="New note"
                     placeholder="Add a note..."
                 />
                 <InputError :message="form.errors.body" />

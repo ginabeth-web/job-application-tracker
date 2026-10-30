@@ -16,17 +16,17 @@ defineProps<{
 <template>
     <div
         :id="`application-${application.id}`"
-        class="relative cursor-grab rounded-xl"
+        class="group relative scroll-mt-20 rounded-xl"
     >
         <Link
             :href="route('applications.show', application.id)"
             :aria-label="`Open ${application.company}`"
-            class="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            class="absolute inset-0 z-10 cursor-grab rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         />
         <Card
             :class="
                 cn(
-                    'gap-2 py-3 transition-shadow hover:shadow-md',
+                    'gap-2 py-3 transition-shadow group-hover:shadow-md',
                     statusStyles(application.status).stripe,
                 )
             "

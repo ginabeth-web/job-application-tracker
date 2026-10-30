@@ -14,7 +14,7 @@ import { Button } from '@/Components/ui/button';
 import { Input } from '@/Components/ui/input';
 import { Label } from '@/Components/ui/label';
 import { useForm } from '@inertiajs/vue3';
-import { ref } from 'vue';
+import { nextTick, ref } from 'vue';
 
 const open = ref(false);
 
@@ -31,6 +31,10 @@ const deleteUser = () => {
             form.reset();
         },
     });
+};
+
+const focusPassword = () => {
+    nextTick(() => document.getElementById('delete-password')?.focus());
 };
 
 const closeDialog = () => {
@@ -66,7 +70,9 @@ const onOpenChange = (value: boolean) => {
                 <Button variant="destructive">Delete Account</Button>
             </AlertDialogTrigger>
 
-            <AlertDialogContent>
+            <AlertDialogContent
+                @open-auto-focus.prevent="focusPassword"
+            >
                 <AlertDialogHeader>
                     <AlertDialogTitle>
                         Are you sure you want to delete your account?

@@ -3,7 +3,8 @@ import { Button } from '@/Components/ui/button';
 import {
     DropdownMenu,
     DropdownMenuContent,
-    DropdownMenuItem,
+    DropdownMenuRadioGroup,
+    DropdownMenuRadioItem,
     DropdownMenuTrigger,
 } from '@/Components/ui/dropdown-menu';
 import { type Appearance, useAppearance } from '@/composables/useAppearance';
@@ -27,15 +28,19 @@ const options: { value: Appearance; label: string; icon: typeof Sun }[] = [
             </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-            <DropdownMenuItem
-                v-for="option in options"
-                :key="option.value"
-                :class="appearance === option.value && 'bg-accent'"
-                @select="setAppearance(option.value)"
+            <DropdownMenuRadioGroup
+                :model-value="appearance"
+                @update:model-value="setAppearance($event as Appearance)"
             >
-                <component :is="option.icon" />
-                {{ option.label }}
-            </DropdownMenuItem>
+                <DropdownMenuRadioItem
+                    v-for="option in options"
+                    :key="option.value"
+                    :value="option.value"
+                >
+                    <component :is="option.icon" />
+                    {{ option.label }}
+                </DropdownMenuRadioItem>
+            </DropdownMenuRadioGroup>
         </DropdownMenuContent>
     </DropdownMenu>
 </template>

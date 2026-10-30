@@ -41,13 +41,7 @@ function apply(value: Appearance): void {
     document.documentElement.classList.toggle('dark', dark);
 }
 
-let listening = false;
-
-function listen(): void {
-    if (listening || typeof window === 'undefined') {
-        return;
-    }
-    listening = true;
+if (typeof window !== 'undefined') {
     window
         .matchMedia('(prefers-color-scheme: dark)')
         .addEventListener('change', (event) => {
@@ -59,8 +53,6 @@ function listen(): void {
 }
 
 export function useAppearance() {
-    listen();
-
     function setAppearance(value: Appearance): void {
         appearance.value = value;
         try {

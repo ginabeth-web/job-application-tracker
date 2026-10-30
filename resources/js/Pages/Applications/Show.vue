@@ -14,6 +14,7 @@ import { statusStyles } from '@/lib/status';
 import { cn } from '@/lib/utils';
 import { Application, Note } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
+import { toast } from 'vue-sonner';
 import { ExternalLink, Pencil, Trash2 } from 'lucide-vue-next';
 
 const props = defineProps<{
@@ -22,7 +23,9 @@ const props = defineProps<{
 }>();
 
 const destroy = () => {
-    router.delete(route('applications.destroy', props.application.id));
+    router.delete(route('applications.destroy', props.application.id), {
+        onSuccess: () => toast.success('Application deleted'),
+    });
 };
 </script>
 

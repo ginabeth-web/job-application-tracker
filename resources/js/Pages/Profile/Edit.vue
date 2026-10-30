@@ -18,7 +18,7 @@ defineProps<{
     <AuthenticatedLayout>
         <template #header>Profile</template>
 
-        <div class="mx-auto max-w-3xl space-y-6 p-4 sm:p-6">
+        <div class="mx-auto max-w-3xl space-y-6">
             <Card>
                 <CardContent>
                     <UpdateProfileInformationForm

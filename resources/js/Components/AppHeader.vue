@@ -13,9 +13,9 @@ import { SidebarTrigger } from '@/Components/ui/sidebar';
             orientation="vertical"
             class="mr-2 data-[orientation=vertical]:h-4"
         />
-        <div class="min-w-0 truncate text-base font-semibold">
+        <h1 class="min-w-0 truncate text-base font-semibold">
             <slot name="title" />
-        </div>
+        </h1>
         <div class="flex-1" />
         <slot name="actions" />
         <AppearanceToggle />

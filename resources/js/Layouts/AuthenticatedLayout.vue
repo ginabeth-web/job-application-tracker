@@ -2,10 +2,12 @@
 import AppHeader from '@/Components/AppHeader.vue';
 import AppSidebar from '@/Components/AppSidebar.vue';
 import { SidebarInset, SidebarProvider } from '@/Components/ui/sidebar';
+
+const defaultOpen = !document.cookie.includes('sidebar_state=false');
 </script>
 
 <template>
-    <SidebarProvider>
+    <SidebarProvider :default-open="defaultOpen">
         <AppSidebar />
         <SidebarInset class="min-w-0">
             <AppHeader>
