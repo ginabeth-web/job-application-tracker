@@ -16,9 +16,9 @@ import { SidebarInset, SidebarProvider } from '@/Components/ui/sidebar';
                     <slot name="actions" />
                 </template>
             </AppHeader>
-            <main class="flex-1 p-4 md:p-6">
+            <div class="flex-1 p-4 md:p-6">
                 <slot />
-            </main>
+            </div>
         </SidebarInset>
     </SidebarProvider>
 </template>

@@ -4,7 +4,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { BoardColumn as BoardColumnData } from '@/types';
 import { Button } from '@/Components/ui/button';
 import { Head, Link } from '@inertiajs/vue3';
-import { Plus } from 'lucide-vue-next';
+import { BellRing, Plus } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -45,20 +45,17 @@ const firstDueHref = computed(() => {
             </Button>
         </template>
 
-        <div class="py-8">
-            <div
+        <div class="min-w-0">
+            <a
                 v-if="dueCount > 0"
-                class="mx-auto mb-4 max-w-full px-4 sm:px-6 lg:px-8"
+                :href="firstDueHref"
+                class="mb-4 flex items-center gap-2 rounded-lg border border-amber-300 bg-amber-50 px-4 py-2 text-sm font-medium text-amber-900 hover:bg-amber-100 dark:border-amber-800 dark:bg-amber-950/60 dark:text-amber-200 dark:hover:bg-amber-950"
             >
-                <a
-                    :href="firstDueHref"
-                    class="block rounded-md bg-amber-100 px-4 py-2 text-sm font-medium text-amber-800 hover:bg-amber-200"
-                >
-                    {{ dueCount }}
-                    {{ dueCount === 1 ? 'follow-up' : 'follow-ups' }} due
-                </a>
-            </div>
-            <div class="mx-auto flex max-w-full gap-4 overflow-x-auto px-4 sm:px-6 lg:px-8">
+                <BellRing class="size-4 shrink-0" />
+                {{ dueCount }}
+                {{ dueCount === 1 ? 'follow-up' : 'follow-ups' }} due
+            </a>
+            <div class="flex snap-x gap-4 overflow-x-auto pb-4">
                 <BoardColumn
                     v-for="column in columns"
                     :key="column.status"

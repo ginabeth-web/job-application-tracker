@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import ApplicationCard from '@/Components/ApplicationCard.vue';
+import { statusStyles } from '@/lib/status';
+import { cn } from '@/lib/utils';
 import { Application, ApplicationStatus } from '@/types';
 import { router } from '@inertiajs/vue3';
 import { VueDraggable, type DraggableEvent } from 'vue-draggable-plus';
@@ -28,28 +30,56 @@ const onDrop = (event: DraggableEvent<Application>) => {
 </script>
 
 <template>
-    <section class="w-72 shrink-0 rounded-lg bg-gray-200 p-3">
-        <h3 class="mb-3 flex items-center justify-between text-sm font-semibold text-gray-700">
-            {{ label }}
-            <span class="rounded-full bg-white px-2 text-xs">
+    <section
+        :class="
+            cn(
+                'w-72 shrink-0 snap-start rounded-xl p-3',
+                statusStyles(status).column,
+            )
+        "
+    >
+        <h3 class="mb-3 flex items-center justify-between text-sm font-semibold">
+            <span :class="cn('flex items-center gap-2', statusStyles(status).title)">
+                <span :class="cn('size-2.5 rounded-full', statusStyles(status).dot)" />
+                {{ label }}
+            </span>
+            <span
+                :class="
+                    cn(
+                        'rounded-full px-2 py-0.5 text-xs font-semibold',
+                        statusStyles(status).count,
+                    )
+                "
+            >
                 {{ applications.length }}
             </span>
         </h3>
-        <VueDraggable
-            v-model="applications"
-            group="board"
-            class="min-h-24 space-y-2"
-            @add="onDrop"
-            @update="onDrop"
-        >
-            <ApplicationCard
-                v-for="application in applications"
-                :key="application.id"
-                :application="application"
-            />
-        </VueDraggable>
-        <p v-if="applications.length === 0" class="text-sm text-gray-500">
-            No applications
-        </p>
+        <div class="relative">
+            <VueDraggable
+                v-model="applications"
+                group="board"
+                class="min-h-24 space-y-2"
+                @add="onDrop"
+                @update="onDrop"
+            >
+                <ApplicationCard
+                    v-for="application in applications"
+                    :key="application.id"
+                    :application="application"
+                />
+            </VueDraggable>
+            <!-- Sibling of the drop zone (not a list item), so it can't be dragged or counted. -->
+            <div
+                v-if="applications.length === 0"
+                :class="
+                    cn(
+                        'pointer-events-none absolute inset-0 flex items-center justify-center rounded-lg border-2 border-dashed text-sm',
+                        statusStyles(status).empty,
+                    )
+                "
+            >
+                No applications
+            </div>
+        </div>
     </section>
 </template>
