@@ -13,12 +13,16 @@ defineProps<{
 </script>
 
 <template>
-    <!-- The Link is the single root element, so it is the direct draggable item. -->
-    <Link
+    <!-- Plain div root: the direct draggable item must not be a component root. -->
+    <div
         :id="`application-${application.id}`"
-        :href="route('applications.show', application.id)"
-        class="block cursor-grab rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        class="relative cursor-grab rounded-xl"
     >
+        <Link
+            :href="route('applications.show', application.id)"
+            :aria-label="`Open ${application.company}`"
+            class="absolute inset-0 z-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+        />
         <Card
             :class="
                 cn(
@@ -47,6 +51,7 @@ defineProps<{
                     <span
                         v-if="application.applied_on"
                         class="inline-flex items-center gap-1"
+                        title="Applied"
                     >
                         <CalendarDays class="size-3.5" />
                         {{ application.applied_on }}
@@ -68,5 +73,5 @@ defineProps<{
                 </div>
             </CardContent>
         </Card>
-    </Link>
+    </div>
 </template>
