@@ -26,7 +26,7 @@ class SendFollowUpRemindersTest extends TestCase
     public function test_sends_one_notification_per_user_with_due_items(): void
     {
         $a = User::factory()->create();
-        Application::factory()->for($a)->count(2)->create(['follow_up_on' => '2026-10-28']);
+        Application::factory()->for($a)->count(2)->create(['status' => ApplicationStatus::Applied, 'follow_up_on' => '2026-10-28']);
 
         $this->artisan('applications:send-follow-up-reminders')
             ->expectsOutput('Sent reminders to 1 user.')
@@ -40,8 +40,8 @@ class SendFollowUpRemindersTest extends TestCase
         $a = User::factory()->create();
         $b = User::factory()->create();
         $c = User::factory()->create();
-        Application::factory()->for($a)->create(['follow_up_on' => '2026-10-29']);
-        Application::factory()->for($b)->create(['follow_up_on' => '2026-10-30']);
+        Application::factory()->for($a)->create(['status' => ApplicationStatus::Applied, 'follow_up_on' => '2026-10-29']);
+        Application::factory()->for($b)->create(['status' => ApplicationStatus::Applied, 'follow_up_on' => '2026-10-30']);
         Application::factory()->for($c)->create([
             'follow_up_on' => '2026-10-01',
             'status' => ApplicationStatus::Rejected,
@@ -57,9 +57,9 @@ class SendFollowUpRemindersTest extends TestCase
     public function test_notification_lists_only_due_applications(): void
     {
         $a = User::factory()->create();
-        Application::factory()->for($a)->count(2)->create(['follow_up_on' => '2026-10-28']);
-        Application::factory()->for($a)->create(['follow_up_on' => '2026-11-15']);
-        Application::factory()->for($a)->create(['follow_up_on' => null]);
+        Application::factory()->for($a)->count(2)->create(['status' => ApplicationStatus::Applied, 'follow_up_on' => '2026-10-28']);
+        Application::factory()->for($a)->create(['status' => ApplicationStatus::Applied, 'follow_up_on' => '2026-11-15']);
+        Application::factory()->for($a)->create(['status' => ApplicationStatus::Applied, 'follow_up_on' => null]);
 
         $this->artisan('applications:send-follow-up-reminders')->assertSuccessful();
 
