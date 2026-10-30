@@ -46,7 +46,7 @@ Built with Laravel 12, Inertia.js, Vue 3 (TypeScript), Tailwind CSS 4 and shadcn
 Requirements: PHP 8.2+, Composer, Node.js 20.19+ and npm.
 
 ```bash
-git clone <your-repo-url> job-application-tracker
+git clone https://github.com/ginabeth-web/job-application-tracker.git
 cd job-application-tracker
 
 composer install
