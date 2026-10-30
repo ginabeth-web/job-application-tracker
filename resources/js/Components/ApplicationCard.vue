@@ -7,13 +7,13 @@ import { Application } from '@/types';
 import { Link } from '@inertiajs/vue3';
 import { CalendarDays, MessageSquare } from 'lucide-vue-next';
 
+// The root must stay a single plain element (no leading comment): it is the direct draggable item.
 defineProps<{
     application: Application;
 }>();
 </script>
 
 <template>
-    <!-- Plain div root: the direct draggable item must not be a component root. -->
     <div
         :id="`application-${application.id}`"
         class="relative cursor-grab rounded-xl"
