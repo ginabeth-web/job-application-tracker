@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { computed, ref } from 'vue';
 
 export type Appearance = 'light' | 'dark' | 'system';
 
@@ -20,6 +20,19 @@ const appearance = ref<Appearance>(
     typeof window === 'undefined' ? 'system' : readStored(),
 );
 
+const systemDark = ref(
+    typeof window !== 'undefined' &&
+        window.matchMedia('(prefers-color-scheme: dark)').matches,
+);
+
+export const resolvedAppearance = computed<'light' | 'dark'>(() =>
+    appearance.value === 'system'
+        ? systemDark.value
+            ? 'dark'
+            : 'light'
+        : appearance.value,
+);
+
 function apply(value: Appearance): void {
     const dark =
         value === 'dark' ||
@@ -37,7 +50,8 @@ function listen(): void {
     listening = true;
     window
         .matchMedia('(prefers-color-scheme: dark)')
-        .addEventListener('change', () => {
+        .addEventListener('change', (event) => {
+            systemDark.value = event.matches;
             if (appearance.value === 'system') {
                 apply('system');
             }

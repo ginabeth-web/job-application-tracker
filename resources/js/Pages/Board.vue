@@ -2,7 +2,9 @@
 import BoardColumn from '@/Components/BoardColumn.vue';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { BoardColumn as BoardColumnData } from '@/types';
+import { Button } from '@/Components/ui/button';
 import { Head, Link } from '@inertiajs/vue3';
+import { Plus } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -32,18 +34,15 @@ const firstDueHref = computed(() => {
     <Head title="Board" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex items-center justify-between">
-                <h2 class="text-xl font-semibold leading-tight text-gray-800">
-                    Board
-                </h2>
-                <Link
-                    :href="route('applications.create')"
-                    class="rounded-md bg-gray-800 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-white hover:bg-gray-700"
-                >
+        <template #header>Board</template>
+
+        <template #actions>
+            <Button as-child size="sm">
+                <Link :href="route('applications.create')">
+                    <Plus />
                     New application
                 </Link>
-            </div>
+            </Button>
         </template>
 
         <div class="py-8">

@@ -4,6 +4,7 @@ import './bootstrap';
 import { createInertiaApp } from '@inertiajs/vue3';
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createApp, DefineComponent, h } from 'vue';
+import { resolvedAppearance } from '@/composables/useAppearance';
 import { Toaster } from '@/Components/ui/sonner';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
@@ -18,7 +19,13 @@ createInertiaApp({
         ),
     setup({ el, App, props, plugin }) {
         createApp({
-            render: () => [h(App, props), h(Toaster, { richColors: true })],
+            render: () => [
+                h(App, props),
+                h(Toaster, {
+                    richColors: true,
+                    theme: resolvedAppearance.value,
+                }),
+            ],
         })
             .use(plugin)
             .use(ZiggyVue)
